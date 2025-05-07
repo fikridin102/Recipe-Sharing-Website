@@ -257,7 +257,7 @@ Please ensure that proper authentication and authorization mechanisms are in pla
 
 To run RecipeHub locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/recipehub.git`
+1. Clone the repository: 
 2. Install dependencies: `npm install`
 3. Set up the database and configure environment variables.
 4. Start the development frontend-app: `npm start`
