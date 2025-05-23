@@ -5,32 +5,6 @@ require_once '../includes/functions.php';
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
-
-// Get all recipes with user information
-$category = isset($_GET['category']) ? $_GET['category'] : '';
-$where_clause = '';
-$params = [];
-
-if (!empty($category)) {
-    $where_clause = "WHERE r.category = ?";
-    $params[] = $category;
-}
-
-$db = new Database();
-$conn = $db->getConnection();
-$stmt = $conn->prepare("
-    SELECT r.*, u.username, u.profile_image 
-    FROM recipes r 
-    JOIN users u ON r.user_id = u.id 
-    $where_clause
-    ORDER BY r.created_at DESC
-");
-$stmt->execute($params);
-$recipes = $stmt->fetchAll();
-
-// Get unique categories for filter
-$stmt = $conn->query("SELECT DISTINCT category FROM recipes ORDER BY category");
-$categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <!DOCTYPE html>
@@ -47,26 +21,23 @@ $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-8">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>Recipe List</h1>
-                    <form method="GET" action="" class="d-flex gap-2">
-                        <select name="category" class="form-select" onchange="this.form.submit()">
-                            <option value="">All Categories</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $category === $cat ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($cat); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <?php if (!empty($category)): ?>
-                            <a href="index.php" class="btn btn-secondary">Clear Filter</a>
-                        <?php endif; ?>
-                    </form>
-                </div>
+                <h2>Recipes</h2>
                 <div id="recipe-feed">
                     <?php
-                    // Display recipes from the already fetched $recipes array
-                    foreach ($recipes as $recipe) {
+                    // Fetch and display latest recipes
+                    $db = new Database();
+                    $conn = $db->getConnection();
+                    
+                    $query = "SELECT r.*, u.username, u.profile_image 
+                             FROM recipes r 
+                             JOIN users u ON r.user_id = u.id 
+                             ORDER BY r.created_at DESC 
+                             LIMIT 10";
+                    
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute();
+                    
+                    while ($recipe = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         echo '<div class="card mb-3">';
                         echo '<div class="card-body">';
                         echo '<div class="d-flex align-items-center mb-2">';
