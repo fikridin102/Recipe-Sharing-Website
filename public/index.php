@@ -60,7 +60,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="card mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Quick Actions</h5>
-                            <a href="create-recipe.php" class="btn btn-success w-100 mb-2">Create New Recipe</a>
+                            <a href="create-recipe.php" class="btn btn-success w-100 mb-2">Create  Recipe</a>
                             <a href="friends.php" class="btn btn-info w-100">View Friends</a>
                         </div>
                     </div>

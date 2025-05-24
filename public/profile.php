@@ -19,7 +19,7 @@ $stmt->bindParam(":user_id", $_SESSION['user_id']);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Get user's recipes
+// Get user's recipes 
 $query = "SELECT * FROM recipes WHERE user_id = :user_id ORDER BY created_at DESC";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(":user_id", $_SESSION['user_id']);
