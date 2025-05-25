@@ -2,6 +2,10 @@
 require_once '../config/database.php';
 require_once '../includes/auth.php';
 
+// Add database connection
+$db = new Database();
+$pdo = $db->getConnection();
+
 // Check if user is logged in
 if (!isLoggedIn()) {
     header('Location: login.php');
