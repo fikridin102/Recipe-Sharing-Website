@@ -128,33 +128,34 @@ if ($user_id) {
                                 <h5 class="card-title">Quick Actions</h5>
                                 <a href="create-recipe.php" class="btn btn-success w-100 mb-2">Create New Recipe</a>
                                 <a href="friends.php" class="btn btn-info w-100">View Friends</a>
-                        <h2 class="mb-3"><?php echo htmlspecialchars($recipe['title']); ?></h2>
-                        <p class="text-muted"><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
+                                <h2 class="mb-3"><?php echo htmlspecialchars($recipe['title']); ?></h2>
+                                <p class="text-muted"><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
 
-                        <h4 class="mt-4">🛒 Ingredients</h4>
-                        <ul class="icon-list">
-                            <?php foreach (explode("\n", $recipe['ingredients']) as $ing): ?>
-                                <li><?php echo htmlspecialchars(trim($ing)); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+                                <h4 class="mt-4">🛒 Ingredients</h4>
+                                <ul class="icon-list">
+                                    <?php foreach (explode("\n", $recipe['ingredients']) as $ing): ?>
+                                        <li><?php echo htmlspecialchars(trim($ing)); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
 
-                        <h4 class="mt-4">📋 Instructions</h4>
-                        <ol class="icon-steps">
-                            <?php foreach (explode("\n", $recipe['instructions']) as $step): ?>
-                                <li><?php echo htmlspecialchars(trim($step)); ?></li>
-                            <?php endforeach; ?>
-                        </ol>
+                                <h4 class="mt-4">📋 Instructions</h4>
+                                <ol class="icon-steps">
+                                    <?php foreach (explode("\n", $recipe['instructions']) as $step): ?>
+                                        <li><?php echo htmlspecialchars(trim($step)); ?></li>
+                                    <?php endforeach; ?>
+                                </ol>
 
-                        <div class="d-flex justify-content-start gap-2 mt-4">
-                            <button id="like-btn-<?php echo $recipe_id; ?>" class="btn btn-outline-danger like-btn <?php echo $has_liked ? 'active' : ''; ?>" onclick="toggleLike(<?php echo $recipe_id; ?>)">
-                                <i class="fas fa-heart"></i> <span id="like-count-<?php echo $recipe_id; ?>"><?php echo $like_count; ?></span> Like
-                            </button>
-                            <button class="btn btn-outline-success save-btn <?php echo $has_saved ? 'active' : ''; ?>" onclick="saveRecipe(<?php echo $recipe_id; ?>)">
-                                <i class="fas fa-bookmark"></i> Save
-                            </button>
+                                <div class="d-flex justify-content-start gap-2 mt-4">
+                                    <button id="like-btn-<?php echo $recipe_id; ?>" class="btn btn-outline-danger like-btn <?php echo $has_liked ? 'active' : ''; ?>" onclick="toggleLike(<?php echo $recipe_id; ?>)">
+                                        <i class="fas fa-heart"></i> <span id="like-count-<?php echo $recipe_id; ?>"><?php echo $like_count; ?></span> Like
+                                    </button>
+                                    <button class="btn btn-outline-success save-btn <?php echo $has_saved ? 'active' : ''; ?>" onclick="saveRecipe(<?php echo $recipe_id; ?>)">
+                                        <i class="fas fa-bookmark"></i> Save
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    <?php endif; ?>
 
                 <!-- Comments Section -->
                 <div class="card shadow-sm mb-5">
