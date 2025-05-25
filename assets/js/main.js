@@ -203,3 +203,117 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 }); 
+
+document.addEventListener('DOMContentLoaded', function() {
+console.log('Feedback JS loaded'); // At top of your feedback code
+console.log(document.querySelector('#star-rating')); // Check if elements exist
+
+
+// ||for feedback module
+let selectedRating = 0;
+
+// Star click
+document.querySelectorAll("#star-rating span").forEach((star) => {
+  star.addEventListener("click", () => {
+    selectedRating = parseInt(star.dataset.value);
+    updateStars(selectedRating);
+    updateSendButton(selectedRating);
+  });
+});
+
+function getRecipeId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('recipe_id');
+}
+
+
+function updateStars(rating) {
+  const stars = document.querySelectorAll("#star-rating span");
+  stars.forEach((star, index) => {
+    star.classList.toggle("selected", index < rating);
+  });
+}
+
+function updateSendButton(rating) {
+  const sendBtn = document.querySelector(".send-btn");
+  if (rating > 0) {
+    sendBtn.disabled = false;
+    sendBtn.classList.remove("disabled");
+    sendBtn.style.backgroundColor = "orange";
+    sendBtn.style.cursor = "pointer";
+  } else {
+    sendBtn.disabled = true;
+    sendBtn.classList.add("disabled");
+    sendBtn.style.backgroundColor = "grey";
+    sendBtn.style.cursor = "not-allowed";
+  }
+}
+
+
+
+// Tag buttons toggle
+document.querySelectorAll(".tag").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("active");
+  });
+});
+
+// Submit button
+function submitRating() {
+  console.log('Submit clicked, selectedRating:', selectedRating);
+  const comment = document.getElementById("commentBox").value.trim();
+
+  // if (selectedRating === 0) {
+  //   alert("Please select a star rating before submitting.");
+  //   return;
+  // }
+
+  // Create a form and POST it
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'submit_rating.php';
+
+  // Add hidden fields
+  form.innerHTML = `
+    <input type="hidden" name="recipe_id" value="${getRecipeId()}">
+    <input type="hidden" name="rating" value="${selectedRating}">
+    <input type="hidden" name="comment" value="${comment}">
+  `;
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
+
+
+const commentBox = document.getElementById('commentBox');
+const charCount = document.getElementById('charCount');
+
+commentBox.addEventListener('input', () => {
+  charCount.textContent = `${commentBox.value.length}/280 characters`;
+});
+
+// On page load: disable send button because no stars selected yet
+updateSendButton(selectedRating);
+document.querySelector(".send-btn").addEventListener("click", (e) => {
+  e.preventDefault(); // prevent default button submit behavior
+  submitRating();
+});
+
+document.querySelectorAll("#star-rating span").forEach((star) => {
+  star.addEventListener("click", () => {
+    selectedRating = parseInt(star.dataset.value);
+    updateStars(selectedRating);
+    updateSendButton(selectedRating);
+    document.getElementById('ratingInput').value = selectedRating;
+  });
+});
+
+document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+  if (selectedRating === 0) {
+    e.preventDefault();
+    alert("Please select a star rating before submitting.");
+  }
+});
+// ||for feedback module
+});

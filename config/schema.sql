@@ -113,6 +113,21 @@ CREATE TABLE IF NOT EXISTS recipe_request_responses (
     UNIQUE KEY unique_response (request_id, recipe_id)
 );
 
+-- Feedback table
+CREATE TABLE IF NOT EXISTS feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT DEFAULT NULL,
+    labels VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
 -- Create indexes for better performance
 CREATE INDEX idx_recipes_user_id ON recipes(user_id);
 CREATE INDEX idx_comments_recipe_id ON comments(recipe_id);
@@ -129,3 +144,7 @@ CREATE INDEX idx_recipe_requests_user_id ON recipe_requests(user_id);
 CREATE INDEX idx_recipe_request_responses_request_id ON recipe_request_responses(request_id);
 CREATE INDEX idx_recipe_request_responses_user_id ON recipe_request_responses(user_id);
 CREATE INDEX idx_recipe_request_responses_recipe_id ON recipe_request_responses(recipe_id); 
+
+-- Create indexes for feedback table
+CREATE INDEX idx_feedback_recipe_id ON feedback(recipe_id);
+CREATE INDEX idx_feedback_user_id ON feedback(user_id);

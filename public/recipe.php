@@ -57,6 +57,7 @@ if (isset($_SESSION['user_id'])) {
     <title><?php echo htmlspecialchars($recipe['title']); ?> - RecipeHub</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/feedback.css" />
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
@@ -115,43 +116,12 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
                 
-                <!-- Comments Section -->
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Comments</h4>
-                    </div>
-                    <div class="card-body">
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                            <form id="comment-form-<?php echo $recipe_id; ?>" class="mb-4">
-                                <div class="mb-3">
-                                    <textarea class="form-control" id="comment-input-<?php echo $recipe_id; ?>" 
-                                              rows="3" placeholder="Write a comment..."></textarea>
-                                </div>
-                                <button type="button" class="btn btn-primary" 
-                                        onclick="submitComment(<?php echo $recipe_id; ?>)">
-                                    Post Comment
-                                </button>
-                            </form>
-                        <?php endif; ?>
-                        
-                        <div id="comments-<?php echo $recipe_id; ?>">
-                            <?php foreach ($comments as $comment): ?>
-                                <div class="comment">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <img src="../assets/images/profiles/<?php echo htmlspecialchars($comment['profile_image']); ?>" 
-                                             class="rounded-circle me-2" width="32" height="32">
-                                        <strong><?php echo htmlspecialchars($comment['username']); ?></strong>
-                                    </div>
-                                    <p class="mb-1"><?php echo nl2br(htmlspecialchars($comment['comment'])); ?></p>
-                                    <small class="text-muted">
-                                        <?php echo date('F j, Y g:i a', strtotime($comment['created_at'])); ?>
-                                    </small>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
+            <?php 
+                $passed_recipe_id = $recipe_id;
+                include '../public/feedback/rate_form.php'; 
+            ?>
             
             <div class="col-md-4">
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -170,6 +140,7 @@ if (isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/feedback.js"></script>
     <?php include '../includes/footer.php'; ?>
 </body>
 </html> 
