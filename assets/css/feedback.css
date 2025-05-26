@@ -264,3 +264,11 @@ textarea:focus {
     .success-message a:hover {
       text-decoration: underline;
     }
+    #star-rating span {
+    font-size: 2em;
+    cursor: pointer;
+    color: lightgray;
+}
+#star-rating span.selected {
+    color: orange;
+}

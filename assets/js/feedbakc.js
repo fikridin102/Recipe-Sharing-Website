@@ -1,97 +1,98 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
     const stars = document.querySelectorAll("#star-rating span");
     const sendBtn = document.querySelector(".send-btn");
     const ratingInput = document.getElementById("ratingInput");
     const commentBox = document.getElementById("commentBox");
     const charCount = document.getElementById("charCount");
+    const tagButtons = document.querySelectorAll('.tag');
+    const selectedTagsInput = document.getElementById('selectedTags');
     
+    // State Variables
     let selectedRating = 0;
+    let selectedTags = [];
 
-    // Star rating functionality
-    stars.forEach((star, index) => {
-        // Click event - select rating
-        star.addEventListener("click", function() {
-            selectedRating = parseInt(this.dataset.value);
-            
-            // Update hidden input
-            if (ratingInput) {
-                ratingInput.value = selectedRating;
-            }
-            
-            // Update star display
-            updateStarDisplay(selectedRating);
-            
-            // Enable submit button
-            if (sendBtn) {
-                sendBtn.disabled = false;
-                sendBtn.style.opacity = '1';
-                sendBtn.style.cursor = 'pointer';
-            }
-        });
+    // ===== STAR RATING FUNCTIONALITY =====
+    stars.forEach(star => {
+        star.addEventListener("click", () => {
+            selectedRating = parseInt(star.getAttribute("data-value"));
+            ratingInput.value = selectedRating;
 
-        // Hover effects
-        star.addEventListener("mouseenter", function() {
-            const hoverRating = parseInt(this.dataset.value);
-            updateStarDisplay(hoverRating);
+            stars.forEach(s => s.classList.remove("selected"));
+            for (let i = 0; i < selectedRating; i++) {
+                stars[i].classList.add("selected");
+            }
+
+            if (selectedRating > 0) {
+                submitBtn.removeAttribute("disabled");
+            }
         });
     });
 
-    // Reset stars on mouse leave to show selected rating
-    const starContainer = document.getElementById("star-rating");
-    if (starContainer) {
-        starContainer.addEventListener("mouseleave", function() {
-            updateStarDisplay(selectedRating);
-        });
-    }
-
-    // Function to update star display
-    function updateStarDisplay(rating) {
-        stars.forEach((star, index) => {
-            if (index < rating) {
-                star.style.color = '#ffa500'; // Orange for selected/hovered
-                star.classList.add('selected');
-            } else {
-                star.style.color = '#ddd'; // Gray for unselected
-                star.classList.remove('selected');
+    //form validation?
+    const form = document.getElementById("feedbackForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            if (selectedRating === 0) {
+                e.preventDefault();
+                alert("Please select a rating before submitting!");
             }
         });
     }
 
-    // Character counter for comment box
+    // Reset stars on mouse leave
+    const starContainer = document.getElementById("star-rating");
+    if (starContainer) {
+        starContainer.addEventListener("mouseleave", () => updateStarDisplay(selectedRating));
+    }
+
+    // ===== TAG FUNCTIONALITY =====
+    tagButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tagValue = this.textContent.trim(); // Or this.dataset.value if you add it
+            
+            // Toggle selection
+            this.classList.toggle('selected');
+            
+            // Update selectedTags array
+            if (this.classList.contains('selected')) {
+                selectedTags.push(tagValue);
+            } else {
+                selectedTags = selectedTags.filter(tag => tag !== tagValue);
+            }
+            
+            // Update hidden input
+            selectedTagsInput.value = selectedTags.join(',');
+        });
+    });
+
+    // ===== COMMENT BOX CHARACTER COUNTER =====
     if (commentBox && charCount) {
         commentBox.addEventListener("input", function() {
             const currentLength = this.value.length;
             charCount.textContent = `${currentLength}/280 characters`;
             
-            // Change color when approaching limit
-            if (currentLength > 250) {
-                charCount.style.color = '#ff6b6b';
-            } else if (currentLength > 200) {
-                charCount.style.color = '#ffa500';
-            } else {
-                charCount.style.color = '#666';
-            }
+            // Visual feedback for length
+            charCount.style.color = 
+                currentLength > 250 ? '#ff6b6b' : 
+                currentLength > 200 ? '#ffa500' : '#666';
         });
     }
 
-    // Form validation before submit
-    const form = document.getElementById("feedbackForm");
-    if (form) {
-        form.addEventListener("submit", function(e) {
-            if (selectedRating === 0) {
-                e.preventDefault();
-                alert("Please select a rating before submitting!");
-                return false;
-            }
+
+    // ===== HELPER FUNCTIONS =====
+    function updateStarDisplay(rating) {
+        stars.forEach((star, index) => {
+            star.style.color = index < rating ? '#ffa500' : '#ddd';
+            star.classList.toggle('selected', index < rating);
         });
     }
 
-    // Tag functionality (optional - if you want tags to be clickable)
-    const tags = document.querySelectorAll(".tag");
-    tags.forEach(tag => {
-        tag.addEventListener("click", function() {
-            this.classList.toggle("selected");
-            // You can add logic here to handle selected tags if needed
-        });
-    });
+    function enableSubmitButton() {
+        if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = '1';
+            sendBtn.style.cursor = 'pointer';
+        }
+    }
 });
