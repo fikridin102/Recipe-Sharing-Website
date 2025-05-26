@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $pdo = $database->getConnection();
 class FeedbackModel {
+
     public static function insertFeedback($user_id, $recipe_id, $rating, $comment) {
     global $pdo;
 

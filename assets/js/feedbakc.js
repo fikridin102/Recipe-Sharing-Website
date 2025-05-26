@@ -1,77 +1,97 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll("#star-rating span");
+    const sendBtn = document.querySelector(".send-btn");
+    const ratingInput = document.getElementById("ratingInput");
+    const commentBox = document.getElementById("commentBox");
+    const charCount = document.getElementById("charCount");
+    
     let selectedRating = 0;
-    const ratingInput = document.getElementById('ratingInput');
-    const feedbackForm = document.getElementById('feedbackForm');
-    const commentBox = document.getElementById('commentBox');
-    const charCount = document.getElementById('charCount');
 
-    if (!feedbackForm) return;
-
-    // Initialize on page load
-    updateSendButton(selectedRating);
-    if (charCount && commentBox) {
-        charCount.textContent = `${commentBox.value.length}/280 characters`;
-    }
-
-    // Star click handler
-    if (document.querySelector("#star-rating")) {
-        document.querySelectorAll("#star-rating span").forEach((star) => {
-            star.addEventListener("click", () => {
-                selectedRating = parseInt(star.dataset.value);
-                updateStars(selectedRating);
-                updateSendButton(selectedRating);
-                if (ratingInput) ratingInput.value = selectedRating;
-            });
+    // Star rating functionality
+    stars.forEach((star, index) => {
+        // Click event - select rating
+        star.addEventListener("click", function() {
+            selectedRating = parseInt(this.dataset.value);
+            
+            // Update hidden input
+            if (ratingInput) {
+                ratingInput.value = selectedRating;
+            }
+            
+            // Update star display
+            updateStarDisplay(selectedRating);
+            
+            // Enable submit button
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+                sendBtn.style.cursor = 'pointer';
+            }
         });
-    }
 
-    // Tag buttons toggle
-    document.querySelectorAll(".tag").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            btn.classList.toggle("active");
+        // Hover effects
+        star.addEventListener("mouseenter", function() {
+            const hoverRating = parseInt(this.dataset.value);
+            updateStarDisplay(hoverRating);
         });
     });
 
-    // Comment character count
-    if (commentBox && charCount) {
-        commentBox.addEventListener('input', () => {
-            charCount.textContent = `${commentBox.value.length}/280 characters`;
+    // Reset stars on mouse leave to show selected rating
+    const starContainer = document.getElementById("star-rating");
+    if (starContainer) {
+        starContainer.addEventListener("mouseleave", function() {
+            updateStarDisplay(selectedRating);
         });
     }
 
-    // Form submission
-    if (feedbackForm) {
-        feedbackForm.addEventListener('submit', (e) => {
+    // Function to update star display
+    function updateStarDisplay(rating) {
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.style.color = '#ffa500'; // Orange for selected/hovered
+                star.classList.add('selected');
+            } else {
+                star.style.color = '#ddd'; // Gray for unselected
+                star.classList.remove('selected');
+            }
+        });
+    }
+
+    // Character counter for comment box
+    if (commentBox && charCount) {
+        commentBox.addEventListener("input", function() {
+            const currentLength = this.value.length;
+            charCount.textContent = `${currentLength}/280 characters`;
+            
+            // Change color when approaching limit
+            if (currentLength > 250) {
+                charCount.style.color = '#ff6b6b';
+            } else if (currentLength > 200) {
+                charCount.style.color = '#ffa500';
+            } else {
+                charCount.style.color = '#666';
+            }
+        });
+    }
+
+    // Form validation before submit
+    const form = document.getElementById("feedbackForm");
+    if (form) {
+        form.addEventListener("submit", function(e) {
             if (selectedRating === 0) {
                 e.preventDefault();
-                alert("Please select a star rating before submitting.");
+                alert("Please select a rating before submitting!");
+                return false;
             }
         });
     }
 
-    function updateStars(rating) {
-        const stars = document.querySelectorAll("#star-rating span");
-        if (stars.length > 0) {
-            stars.forEach((star, index) => {
-                star.classList.toggle("selected", index < rating);
-            });
-        }
-    }
-
-    function updateSendButton(rating) {
-        const sendBtn = document.querySelector(".send-btn");
-        if (sendBtn) {
-            if (rating > 0) {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove("disabled");
-                sendBtn.style.backgroundColor = "orange";
-                sendBtn.style.cursor = "pointer";
-            } else {
-                sendBtn.disabled = true;
-                sendBtn.classList.add("disabled");
-                sendBtn.style.backgroundColor = "grey";
-                sendBtn.style.cursor = "not-allowed";
-            }
-        }
-    }
+    // Tag functionality (optional - if you want tags to be clickable)
+    const tags = document.querySelectorAll(".tag");
+    tags.forEach(tag => {
+        tag.addEventListener("click", function() {
+            this.classList.toggle("selected");
+            // You can add logic here to handle selected tags if needed
+        });
+    });
 });

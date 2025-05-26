@@ -269,9 +269,9 @@ function submitRating() {
   // }
 
   // Create a form and POST it
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'submit_rating.php';
+//   const form = document.createElement('form');
+//   form.method = 'POST';
+//   form.action = 'submit_rating.php';
 
   // Add hidden fields
   form.innerHTML = `

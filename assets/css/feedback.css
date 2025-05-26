@@ -234,3 +234,33 @@ textarea:focus {
     pointer-events: none;       /* Disable clicking */
     user-select: none;          /* Prevent highlight */
 }
+
+.success-message {
+      background-color: #dff0d8;
+      padding: 20px;
+      margin: 20px auto;
+      border: 2px solid #3c763d;
+      border-radius: 10px;
+      color: #3c763d;
+      font-size: 18px;
+      text-align: center;
+      max-width: 600px;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .success-message a {
+      display: inline-block;
+      margin-top: 15px;
+      color: orange;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .success-message a:hover {
+      text-decoration: underline;
+    }

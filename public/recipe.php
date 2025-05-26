@@ -48,7 +48,7 @@ if ($user_id) {
     $stmt->execute();
     $has_liked = $stmt->fetch() ? true : false;
 
-    $stmt = $conn->prepare("SELECT id FROM saved_recipes WHERE recipe_id = :recipe_id AND user_id = :user_id");
+    // $stmt = $conn->prepare("SELECT id FROM saved_recipes WHERE recipe_id = :recipe_id AND user_id = :user_id");
     $stmt->bindParam(":recipe_id", $recipe_id);
     $stmt->bindParam(":user_id", $user_id);
     $stmt->execute();
