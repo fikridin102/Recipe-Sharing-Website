@@ -130,14 +130,14 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <form method="GET" class="row g-3">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="search" placeholder="Search recipes..." value="<?php echo htmlspecialchars($search); ?>">
-                                <button class="btn btn-primary" type="submit">
+                                <input type="text" class="form-control" name="search" placeholder="Search recipes by name or ingredient..." aria-label="Search recipes" value="<?php echo htmlspecialchars($search); ?>" data-bs-toggle="tooltip" title="Type a recipe name or ingredient">
+                                <button class="btn btn-primary" type="submit" aria-label="Search">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <select name="category" class="form-select" onchange="this.form.submit()">
+                            <select name="category" class="form-select" onchange="this.form.submit()" data-bs-toggle="tooltip" title="Filter by category">
                                 <option value="">All Categories</option>
                                 <?php foreach ($categories as $cat): ?>
                                     <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $category === $cat ? 'selected' : ''; ?>>
@@ -147,7 +147,7 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select name="sort" class="form-select" onchange="this.form.submit()">
+                            <select name="sort" class="form-select" onchange="this.form.submit()" data-bs-toggle="tooltip" title="Sort recipes">
                                 <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Newest First</option>
                                 <option value="likes" <?php echo $sort === 'likes' ? 'selected' : ''; ?>>Most Liked</option>
                                 <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Oldest First</option>
@@ -220,20 +220,30 @@ $recipes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <div class="col-md-4">
-                <?php if ($isLoggedIn): ?>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Quick Actions</h5>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Actions</h5>
+                        <?php if ($isLoggedIn): ?>
                             <a href="create-recipe.php" class="btn btn-success w-100 mb-2">Create Recipe</a>
-                            <a href="friends.php" class="btn btn-info w-100">View Friends</a>
-                        </div>
+                        <?php else: ?>
+                            <a href="login.php" class="btn btn-success w-100 mb-2" data-bs-toggle="tooltip" title="Login to create a recipe">Create Recipe</a>
+                        <?php endif; ?>
+                        <a href="friends.php" class="btn btn-info w-100">View Friends</a>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+    </script>
     <?php include '../includes/footer.php'; ?>
 </body>
-</html> 
+</html>

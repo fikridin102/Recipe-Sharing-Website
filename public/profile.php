@@ -12,6 +12,18 @@ $db = new Database();
 $conn = $db->getConnection();
 $user_id = $_SESSION['user_id'];
 
+// Handle recipe deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_recipe_id'])) {
+    $delete_id = intval($_POST['delete_recipe_id']);
+    // Only allow deleting own recipes
+    $stmt = $conn->prepare("DELETE FROM recipes WHERE id = :id AND user_id = :user_id");
+    $stmt->bindParam(":id", $delete_id);
+    $stmt->bindParam(":user_id", $user_id);
+    $stmt->execute();
+    header("Location: profile.php");
+    exit();
+}
+
 // Get user profile
 $query = "SELECT * FROM users WHERE id = :user_id";
 $stmt = $conn->prepare($query);
@@ -189,7 +201,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($recipe['title']); ?></h5>
                                 <p class="card-text"><?php echo nl2br(htmlspecialchars(substr($recipe['description'], 0, 150))); ?>...</p>
-                                <a href="recipe.php?id=<?php echo $recipe['id']; ?>" class="btn btn-primary">View Recipe</a>
+                                <div class="d-flex gap-2">
+                                    <a href="recipe.php?id=<?php echo $recipe['id']; ?>" class="btn btn-primary">View</a>
+                                    <a href="edit-recipe.php?id=<?php echo $recipe['id']; ?>" class="btn btn-warning">Edit</a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $recipe['id']; ?>">Delete</button>
+                                </div>
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal<?php echo $recipe['id']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $recipe['id']; ?>" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel<?php echo $recipe['id']; ?>">Delete Recipe</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        Are you sure you want to delete "<strong><?php echo htmlspecialchars($recipe['title']); ?></strong>"?
+                                      </div>
+                                      <div class="modal-footer">
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="delete_recipe_id" value="<?php echo $recipe['id']; ?>">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- End Modal -->
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -260,3 +298,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php include '../includes/footer.php'; ?>
 </body>
 </html>
+
+-- Run this SQL in your MySQL database (e.g., via phpMyAdmin or MySQL CLI)
+
+CREATE TABLE `saved_recipes` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `recipe_id` INT NOT NULL,
+    `saved_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`recipe_id`) REFERENCES `recipes`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `user_recipe_unique` (`user_id`, `recipe_id`)
+);

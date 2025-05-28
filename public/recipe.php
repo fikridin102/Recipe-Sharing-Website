@@ -114,6 +114,14 @@ if ($user_id) {
                     <h2 class="mb-3"><?php echo htmlspecialchars($recipe['title']); ?></h2>
                     <p class="text-muted"><?php echo nl2br(htmlspecialchars($recipe['description'])); ?></p>
 
+                    <h6 class="mb-2">
+                        <?php if (!empty($recipe['time_duration'])): ?>
+                            <span class="badge bg-info text-dark" data-bs-toggle="tooltip" title="Estimated preparation time">
+                                <i class="fas fa-clock"></i> <?php echo intval($recipe['time_duration']); ?> min
+                            </span>
+                        <?php endif; ?>
+                    </h6>
+
                     <h4 class="mt-4">🛒 Ingredients</h4>
                     <ul class="icon-list">
                         <?php foreach (explode("\n", $recipe['ingredients']) as $ing): ?>

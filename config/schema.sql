@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS recipes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     category VARCHAR(50) DEFAULT 'Lain-lain',
+    time_duration INT DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -51,6 +52,17 @@ CREATE TABLE IF NOT EXISTS likes (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY unique_like (recipe_id, user_id)
+);
+
+-- Saved Recipes table
+CREATE TABLE IF NOT EXISTS saved_recipes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    UNIQUE KEY user_recipe_unique (user_id, recipe_id)
 );
 
 -- Friends table
@@ -131,4 +143,4 @@ CREATE INDEX idx_messages_receiver_id ON messages(receiver_id);
 CREATE INDEX idx_recipe_requests_user_id ON recipe_requests(user_id);
 CREATE INDEX idx_recipe_request_responses_request_id ON recipe_request_responses(request_id);
 CREATE INDEX idx_recipe_request_responses_user_id ON recipe_request_responses(user_id);
-CREATE INDEX idx_recipe_request_responses_recipe_id ON recipe_request_responses(recipe_id); 
+CREATE INDEX idx_recipe_request_responses_recipe_id ON recipe_request_responses(recipe_id);
