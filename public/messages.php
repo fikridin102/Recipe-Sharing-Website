@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../config/database.php';
-require_once '../helpers/date_helper.php';
+// require_once '../helpers/date_helper.php';
 
 $db = new Database();
 $pdo = $db->getConnection();
